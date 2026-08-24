@@ -1,174 +1,463 @@
 # 📄 Doc Summarizer
 
-An AI-powered document analysis web application that extracts text from **PDF files** and **scanned images**, then generates smart summaries with key points and improvement suggestions using **Google Gemini 1.5 Flash**.
+An AI-powered document analysis web application that extracts text from **PDF files** and **scanned images**, then generates smart summaries with key points and improvement suggestions using **Google Gemini**.
+
+## 🚀 Live Demo
+
+Try the deployed application here:
+
+**[AI Document Summarizer](https://doument-summarizer-uuzjytjx8k3awdzra3t4qg.streamlit.app/)**
+
+Upload a PDF or image and generate an AI-powered summary with key points and improvement suggestions.
+
+---
 
 ## ✨ Features
 
-- 📤 **Drag & drop or file picker** for PDF and image uploads
-- 📕 **PDF text extraction** with page-by-page parsing (PyMuPDF)
-- 🖼️ **OCR support** for scanned images (Tesseract)
-- 🤖 **AI-powered summaries** via Google Gemini 1.5 Flash
-- 📏 **Adjustable summary length** — Short, Medium, or Long
-- 🎯 **Key points** highlighted automatically
-- 💡 **Improvement suggestions** for the document
-- 📋 **Copy to clipboard** functionality
-- 🌙 **Premium dark glassmorphism UI**, fully responsive
+* 📤 **PDF and Image Upload** — Upload PDF documents or scanned images
+* 📕 **PDF Text Extraction** — Extract text from PDFs using PyMuPDF
+* 🖼️ **OCR Support** — Extract text from scanned images using Tesseract OCR
+* 🤖 **AI-Powered Summarization** — Generate summaries using Google Gemini
+* 📏 **Adjustable Summary Length** — Short, Medium, or Long
+* 🎯 **Key Points** — Automatically identify important points
+* 💡 **Improvement Suggestions** — Generate suggestions based on document content
+* 📊 **Document Statistics** — Display word count, character count, document type, and estimated reading time
+* 📥 **Download Summary** — Download the generated summary as a `.txt` file
+* 🔐 **Secure API Key Handling** — API keys can be provided through Streamlit Secrets or the application interface
+* 📱 **Responsive UI** — Clean and user-friendly Streamlit interface
 
 ---
 
 ## 🏗️ Architecture
 
-```
-frontend/ (React + Vite)    →    backend/ (FastAPI + Python)    →    Google Gemini API
-```
-
----
-
-## 🚀 Setup & Running Locally
-
-### Prerequisites
-
-| Tool | Version | Notes |
-|------|---------|-------|
-| Python | 3.9+ | |
-| Node.js | 18+ | |
-| Tesseract OCR | 5.x | For image OCR support |
-
-### Installing Tesseract OCR
-
-**Windows:**
-1. Download installer from: https://github.com/UB-Mannheim/tesseract/wiki
-2. Install to default path: `C:\Program Files\Tesseract-OCR\`
-3. Add to PATH: `C:\Program Files\Tesseract-OCR\`
-
-**macOS:**
-```bash
-brew install tesseract
+```text
+                    ┌──────────────────────┐
+                    │   Streamlit App      │
+                    │      app.py          │
+                    └──────────┬───────────┘
+                               │
+                 ┌─────────────┴─────────────┐
+                 │                           │
+        ┌────────▼────────┐        ┌────────▼────────┐
+        │    Extractor    │        │    Summarizer   │
+        │  PDF / OCR      │        │  Google Gemini  │
+        └────────┬────────┘        └────────┬────────┘
+                 │                           │
+        ┌────────▼────────┐        ┌────────▼────────┐
+        │    PyMuPDF      │        │  Gemini API     │
+        │   Tesseract     │        │  AI Processing  │
+        └─────────────────┘        └─────────────────┘
 ```
 
-**Linux (Ubuntu/Debian):**
-```bash
-sudo apt install tesseract-ocr
-```
-
-### Backend Setup
-
-```bash
-cd backend
-
-# Create and activate virtual environment
-python -m venv venv
-# Windows:
-venv\Scripts\activate
-# macOS/Linux:
-source venv/bin/activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Start the backend server
-uvicorn main:app --reload --port 8000
-```
-
-The API will be available at `http://localhost:8000`  
-Interactive API docs: `http://localhost:8000/docs`
-
-### Frontend Setup
-
-```bash
-cd frontend
-
-# Install dependencies
-npm install
-
-# Start the dev server
-npm run dev
-```
-
-The app will be available at `http://localhost:5173`
-
----
-
-## 🔑 Getting a Gemini API Key
-
-1. Go to [Google AI Studio](https://aistudio.google.com/app/apikey)
-2. Sign in with your Google account
-3. Click **"Create API Key"**
-4. Copy the key (starts with `AIza...`)
-5. Paste it into the **API Key** field in the app UI
-
-> **Free tier:** 15 requests/minute, 1 million tokens/day — more than enough for testing.
-
----
-
-## 📁 Project Structure
-
-```
-Doc Summarizer/
-├── backend/
-│   ├── main.py           # FastAPI app, /process endpoint
-│   ├── extractor.py      # PDF (PyMuPDF) + Image (pytesseract) extraction
-│   ├── summarizer.py     # Gemini AI summarization
-│   ├── requirements.txt
-│   └── .env.example
-└── frontend/
-    ├── src/
-    │   ├── App.jsx                    # Main application
-    │   ├── index.css                  # Premium dark design system
-    │   └── components/
-    │       ├── UploadZone.jsx         # Drag & drop upload
-    │       └── SummaryResult.jsx     # Results display
-    ├── index.html
-    └── .env
-```
+The Streamlit application acts as the main interface and connects directly to the Python modules inside the `backend` directory.
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Layer | Technology | Purpose |
-|-------|-----------|---------|
-| Frontend | React + Vite | UI framework |
-| Styling | Vanilla CSS | Custom dark glassmorphism design |
-| Backend | FastAPI | REST API server |
-| PDF Parsing | PyMuPDF (`fitz`) | High-quality PDF text extraction |
-| OCR | Tesseract + pytesseract | Image text recognition |
-| AI | Google Gemini 1.5 Flash | Smart summarization |
+| Technology        | Purpose                             |
+| ----------------- | ----------------------------------- |
+| Streamlit         | Web application and user interface  |
+| Python            | Core programming language           |
+| PyMuPDF (`fitz`)  | PDF text extraction                 |
+| Tesseract OCR     | Text extraction from scanned images |
+| pytesseract       | Python interface for Tesseract      |
+| Pillow            | Image processing                    |
+| Google Gemini API | AI-powered document summarization   |
+| python-dotenv     | Environment variable management     |
+
+---
+
+## 📁 Project Structure
+
+```text
+Doc Summarizer/
+│
+├── backend/
+│   ├── extractor.py       # PDF and image text extraction
+│   ├── main.py            # FastAPI backend module
+│   ├── summarizer.py      # Gemini AI summarization
+│   ├── requirements.txt   # Backend dependencies
+│   └── .env.example       # Environment variable example
+│
+├── frontend/
+│   └── ...                # Original frontend files
+│
+├── app.py                 # Main Streamlit application
+├── requirements.txt       # Streamlit deployment dependencies
+├── packages.txt           # Linux system packages for deployment
+├── .gitignore             # Files excluded from Git
+└── README.md              # Project documentation
+```
+
+---
+
+## ⚙️ How It Works
+
+The application follows these steps:
+
+```text
+1. User uploads a PDF or image
+                ↓
+2. File type is identified
+                ↓
+3. PDF → PyMuPDF text extraction
+   Image → Tesseract OCR
+                ↓
+4. Extracted text is validated
+                ↓
+5. Text is sent to Google Gemini
+                ↓
+6. Gemini generates:
+      • Executive Summary
+      • Key Points
+      • Improvement Suggestions
+                ↓
+7. Results are displayed
+                ↓
+8. User can download the summary
+```
+
+---
+
+## 🚀 Running Locally
+
+### Prerequisites
+
+Make sure you have:
+
+| Tool          | Recommended Version |
+| ------------- | ------------------- |
+| Python        | 3.9+                |
+| Tesseract OCR | 5.x                 |
+| pip           | Latest version      |
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/pavankarthik11/doument-summarizer.git
+cd doument-summarizer
+```
+
+### 2. Create a virtual environment
+
+```bash
+python -m venv venv
+```
+
+### Windows
+
+```bash
+venv\Scripts\activate
+```
+
+### macOS/Linux
+
+```bash
+source venv/bin/activate
+```
+
+### 3. Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Install Tesseract OCR
+
+#### Windows
+
+Download and install Tesseract OCR from:
+
+https://github.com/UB-Mannheim/tesseract/wiki
+
+The default installation location is usually:
+
+```text
+C:\Program Files\Tesseract-OCR\
+```
+
+Add the Tesseract installation directory to your system PATH if required.
+
+#### macOS
+
+```bash
+brew install tesseract
+```
+
+#### Ubuntu/Debian
+
+```bash
+sudo apt update
+sudo apt install tesseract-ocr
+```
+
+### 5. Run the Streamlit application
+
+```bash
+python -m streamlit run app.py
+```
+
+The application will normally be available at:
+
+```text
+http://localhost:8501
+```
+
+---
+
+## 🔑 Google Gemini API Key
+
+The application requires a Google Gemini API key for AI summarization.
+
+### Get an API key
+
+1. Go to [Google AI Studio](https://aistudio.google.com/app/apikey)
+2. Sign in with your Google account.
+3. Create an API key.
+4. Copy the generated key.
+5. Enter it in the application's **Gemini API Key** field.
+
+### Streamlit Deployment
+
+For Streamlit Community Cloud, the API key should be stored using **Streamlit Secrets**:
+
+```toml
+GEMINI_API_KEY = "YOUR_API_KEY"
+```
+
+The API key should **never be committed to GitHub**.
 
 ---
 
 ## 🌐 Deployment
 
-### Frontend → Vercel
-```bash
-cd frontend
-npm run build
-# Deploy the dist/ folder to Vercel
+The application is deployed using **Streamlit Community Cloud**.
+
+### Live Application
+
+**[Open AI Document Summarizer](https://doument-summarizer-uuzjytjx8k3awdzra3t4qg.streamlit.app/)**
+
+### Deployment Configuration
+
+```text
+Repository:
+pavankarthik11/doument-summarizer
+
+Branch:
+main
+
+Main file:
+app.py
+
+Python:
+3.12
 ```
 
-### Backend → Render
-1. Push `backend/` to a GitHub repository
-2. Create a new **Web Service** on [Render](https://render.com)
-3. Set build command: `pip install -r requirements.txt`
-4. Set start command: `uvicorn main:app --host 0.0.0.0 --port $PORT`
-5. Update `frontend/.env` → `VITE_API_URL=https://your-render-app.onrender.com`
+The project uses:
+
+```text
+requirements.txt
+```
+
+for Python dependencies and:
+
+```text
+packages.txt
+```
+
+for required Linux system packages such as Tesseract OCR.
 
 ---
 
-## 📝 My Approach
+## 📄 Supported File Formats
 
-I chose **FastAPI** for the backend due to its async capabilities and automatic OpenAPI documentation, making it easy to test endpoints during development. For text extraction, **PyMuPDF** was selected over alternatives (pdfplumber, PyPDF2) for its superior text layout preservation. **Tesseract OCR** provides free, production-quality image text recognition.
+### PDF
 
-For AI summarization, **Google Gemini 1.5 Flash** offers a generous free tier with excellent instruction-following capabilities. I used structured JSON prompting to reliably extract summaries, key points, and improvement suggestions in a single API call.
+```text
+.pdf
+```
 
-The frontend uses a **premium dark glassmorphism design** with micro-animations to create a polished user experience. The API key is entered via the UI (rather than hard-coded) to ensure flexibility and security.
+PDF text is extracted using **PyMuPDF**.
+
+### Images
+
+```text
+.png
+.jpg
+.jpeg
+.webp
+.bmp
+.tiff
+```
+
+Image text is extracted using **Tesseract OCR**.
+
+### File Size
+
+The application currently supports files up to:
+
+```text
+20 MB
+```
 
 ---
 
-## ⚠️ Error Handling
+## 📊 Summary Output
 
-- **Invalid API key** → Clear error message with guidance
-- **Unsupported file type** → Validated on both client and server
-- **File too large** (>20MB) → Rejected with size info
-- **Empty/unreadable document** → Descriptive error returned
-- **Backend unreachable** → User-friendly connection error
+After processing a document, the application provides:
+
+### Executive Summary
+
+A concise overview of the document.
+
+### Key Points
+
+Important information extracted from the document.
+
+### Improvement Suggestions
+
+AI-generated suggestions based on the document content.
+
+### Document Statistics
+
+The application also displays:
+
+* Document type
+* Word count
+* Character count
+* Estimated reading time
+
+---
+
+## 📝 Summary Length
+
+Users can choose from three summary lengths:
+
+| Option | Description      |
+| ------ | ---------------- |
+| Short  | Brief summary    |
+| Medium | Balanced summary |
+| Long   | Detailed summary |
+
+---
+
+## 💾 Download Summary
+
+After generating the summary, users can download the result as a text file:
+
+```text
+Summary of <filename>.txt
+```
+
+The downloaded file contains:
+
+```text
+Executive Summary
+        ↓
+Key Points
+        ↓
+Improvement Suggestions
+```
+
+---
+
+## 🛡️ Error Handling
+
+The application handles several common errors:
+
+* ❌ Missing Gemini API key
+* ❌ Invalid or unsupported file type
+* ❌ File size exceeding 20 MB
+* ❌ Empty or unreadable document
+* ❌ PDF extraction failure
+* ❌ OCR extraction failure
+* ❌ Gemini API errors
+* ❌ Corrupted documents
+
+Users receive clear error messages when a problem occurs.
+
+---
+
+## 🔐 Security
+
+Sensitive information such as API keys is not stored directly in the source code.
+
+The project uses:
+
+```text
+.env
+```
+
+for local environment variables and **Streamlit Secrets** for cloud deployment.
+
+The `.gitignore` file prevents sensitive files such as `.env` and virtual environments from being committed to GitHub.
+
+**Never commit API keys or passwords to a public repository.**
+
+---
+
+## 🧠 My Approach
+
+The project was designed to provide a simple way to analyze documents using artificial intelligence.
+
+For PDF documents, **PyMuPDF** was selected because it provides efficient and reliable text extraction while preserving useful document information.
+
+For scanned images, **Tesseract OCR** is used to recognize and extract text from image content.
+
+After text extraction, the content is sent to **Google Gemini**, which generates a structured response containing:
+
+```text
+Executive Summary
+Key Points
+Improvement Suggestions
+```
+
+The Streamlit interface was chosen because it allows the document processing functionality to be presented through a simple and interactive web application without requiring a separate frontend deployment.
+
+---
+
+## 🎯 Project Goals
+
+The main goals of the project are:
+
+1. Make document summarization simple and accessible.
+2. Support both digital PDFs and scanned documents.
+3. Extract useful information automatically.
+4. Reduce the time required to read lengthy documents.
+5. Provide structured AI-generated summaries.
+6. Give users important points and improvement suggestions.
+7. Provide a simple web interface that can be accessed online.
+
+---
+
+## 🚀 Future Enhancements
+
+Possible future improvements include:
+
+* 📑 Support for DOCX and PPTX files
+* 🌍 Multi-language OCR and summarization
+* 🔊 Text-to-speech summaries
+* 💬 Interactive document chat
+* 📚 Multiple document comparison
+* 📊 Advanced document analytics
+* 📥 PDF summary export
+* 👤 User accounts and document history
+* ☁️ Cloud-based document storage
+
+---
+
+## 👨‍💻 Project
+
+**Doc Summarizer**
+
+An AI-powered document analysis application built using Python, Streamlit, Tesseract OCR, PyMuPDF, and Google Gemini.
+
+### 🔗 Links
+
+* **Live Demo:** https://doument-summarizer-uuzjytjx8k3awdzra3t4qg.streamlit.app/
+* **GitHub Repository:** https://github.com/pavankarthik11/doument-summarizer
+
+---
+
+⭐ If you find this project useful, consider giving the repository a star!
